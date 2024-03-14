@@ -1,0 +1,560 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package UI;
+
+import Data.*;
+import java.sql.*;
+import java.util.Vector;
+import javax.swing.JOptionPane;
+import java.time.LocalDate;
+import javax.swing.table.*;
+import java.awt.Component;
+import java.awt.Color;
+import java.awt.event.KeyEvent;
+import javax.swing.JTable;
+
+
+/**
+ *
+ * @author Eka, Umar, Rayhan
+ */
+public class Main extends javax.swing.JFrame {
+    String email;
+    /**
+     * Creates new form Main
+     */
+    public Main(String email) {
+        initComponents();
+        loadDataToMedicinesTable();
+        loadDataToTransactionsTable();
+        this.email = email;
+    }
+    
+    private void loadDataToMedicinesTable() {
+        try {
+            Data.Medicines obj = new Data.Medicines();
+            ResultSet res = obj.getAllMedicine();
+
+            // Set up metadata untuk nama kolom
+            ResultSetMetaData metaData = res.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // Set up vector unuk nama kolom
+            Vector<String> columnNames = new Vector<>();
+            for (int column = 1; column <= columnCount; column++) {
+                columnNames.add(metaData.getColumnName(column));
+            }
+
+            // Set up vector untuk data isi
+            Vector<Vector<Object>> data = new Vector<>();
+            while (res.next()) {
+                Vector<Object> row = new Vector<>();
+                for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                    row.add(res.getObject(columnIndex));
+                }
+                data.add(row);
+            }
+
+            DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+
+            medicinesTable.setModel(model);
+
+            // Bagian untuk set background cell merah jika obat sudah expire
+            TableColumn expireColumn = medicinesTable.getColumn("expire");
+            expireColumn.setCellRenderer(new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                    Component cellComponent = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                    LocalDate currentDate = LocalDate.now();
+                    LocalDate expireDate = LocalDate.parse(value.toString());
+
+                    if (expireDate.isBefore(currentDate)) {
+                        cellComponent.setBackground(Color.RED);
+                    } else {
+                        cellComponent.setBackground(table.getBackground());
+                    }
+
+                    return cellComponent;
+                }
+            });
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error loading data to table: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    
+    private void loadDataToTransactionsTable() {
+        try {
+            Data.Transactions obj = new Data.Transactions();
+            ResultSet res = obj.getAllTransaction();
+
+            // Set up metadata untuk nama kolom
+            ResultSetMetaData metaData = res.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            // Set up vector unuk nama kolom
+            Vector<String> columnNames = new Vector<>();
+            for (int column = 1; column <= columnCount; column++) {
+                columnNames.add(metaData.getColumnName(column));
+            }
+
+            // Set up vector untuk data isi
+            Vector<Vector<Object>> data = new Vector<>();
+            while (res.next()) {
+                Vector<Object> row = new Vector<>();
+                for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
+                    row.add(res.getObject(columnIndex));
+                }
+                data.add(row);
+            }
+
+            // Create a DefaultTableModel with data and column names
+            DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            transactionsTable.setModel(model);
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error loading data to table: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The content of this method is always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        medicinesButton = new javax.swing.JButton();
+        cashierButton = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
+        refreshButton = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        adminButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        transactionsTable = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        medicinesTable = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
+
+        medicinesButton.setText("Operasi Stok Obat");
+        medicinesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                medicinesButtonActionPerformed(evt);
+            }
+        });
+        medicinesButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                medicinesButtonKeyPressed(evt);
+            }
+        });
+
+        cashierButton.setText("Operasi Kasir");
+        cashierButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cashierButtonActionPerformed(evt);
+            }
+        });
+        cashierButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cashierButtonKeyPressed(evt);
+            }
+        });
+
+        logoutButton.setText("Log Out");
+        logoutButton.setToolTipText("");
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutButtonActionPerformed(evt);
+            }
+        });
+        logoutButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                logoutButtonKeyPressed(evt);
+            }
+        });
+
+        refreshButton.setText("Refresh");
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
+        refreshButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                refreshButtonKeyPressed(evt);
+            }
+        });
+
+        jLabel2.setBackground(new java.awt.Color(204, 0, 0));
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jLabel2.setText("*Refresh after going back");
+
+        adminButton.setText("Admin Settings");
+        adminButton.setToolTipText("");
+        adminButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminButtonActionPerformed(evt);
+            }
+        });
+        adminButton.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                adminButtonKeyPressed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(medicinesButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cashierButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                    .addComponent(refreshButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(adminButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(adminButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(logoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(medicinesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(cashierButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(refreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(32, 32, 32))
+        );
+
+        jLabel1.setBackground(new java.awt.Color(0, 51, 0));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 102, 0));
+        jLabel1.setText("Apotek Hidayah");
+
+        jLabel4.setBackground(new java.awt.Color(204, 0, 0));
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jLabel4.setText("Obat");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(186, 186, 186)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4)
+                .addGap(17, 17, 17))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(62, 62, 62)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(jLabel4))
+        );
+
+        transactionsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "ID Transaksi", "Waktu", "Jumlah"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        transactionsTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                transactionsTableKeyPressed(evt);
+            }
+        });
+        jScrollPane1.setViewportView(transactionsTable);
+
+        medicinesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "ID Obat", "Nama", "Expire", "Stok", "Harga"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        medicinesTable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                medicinesTableKeyPressed(evt);
+            }
+        });
+        jScrollPane2.setViewportView(medicinesTable);
+
+        jLabel3.setBackground(new java.awt.Color(204, 0, 0));
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jLabel3.setText("Transaksi");
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 603, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 11, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel3)
+                                .addGap(19, 19, 19))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 834, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel3))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(47, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+        // TODO add your handling code here:
+        int option = JOptionPane.showOptionDialog(null, "Yakin Logout?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        
+        if (option == JOptionPane.YES_OPTION) {
+            Login form = new Login();
+            form.setVisible(true);
+            dispose();
+        }
+    }//GEN-LAST:event_logoutButtonActionPerformed
+
+    private void medicinesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_medicinesButtonActionPerformed
+        // TODO add your handling code here:
+        Medicines form = new Medicines();
+        form.setVisible(true);
+    }//GEN-LAST:event_medicinesButtonActionPerformed
+
+    private void cashierButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cashierButtonActionPerformed
+        // TODO add your handling code here:
+        Transactions form = new Transactions(this.email);
+        form.setVisible(true);
+    }//GEN-LAST:event_cashierButtonActionPerformed
+
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        // TODO add your handling code here:
+        loadDataToMedicinesTable();
+        loadDataToTransactionsTable();
+    }//GEN-LAST:event_refreshButtonActionPerformed
+
+    private void adminButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminButtonActionPerformed
+        // TODO add your handling code here:
+        Admins form = new Admins();
+        form.setVisible(true);
+    }//GEN-LAST:event_adminButtonActionPerformed
+
+    private void medicinesTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_medicinesTableKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_R) {
+            refreshButton.doClick();
+        }
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_Q) {
+            logoutButton.doClick();
+        }
+    }//GEN-LAST:event_medicinesTableKeyPressed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_formKeyPressed
+
+    private void transactionsTableKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_transactionsTableKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_R) {
+            refreshButton.doClick();
+        }
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_Q) {
+            logoutButton.doClick();
+        }
+    }//GEN-LAST:event_transactionsTableKeyPressed
+
+    private void medicinesButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_medicinesButtonKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_R) {
+            refreshButton.doClick();
+        }
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_Q) {
+            logoutButton.doClick();
+        }
+    }//GEN-LAST:event_medicinesButtonKeyPressed
+
+    private void cashierButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cashierButtonKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_R) {
+            refreshButton.doClick();
+        }
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_Q) {
+            logoutButton.doClick();
+        }
+        
+    }//GEN-LAST:event_cashierButtonKeyPressed
+
+    private void refreshButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_refreshButtonKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_R) {
+            refreshButton.doClick();
+        }
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_Q) {
+            logoutButton.doClick();
+        }
+    }//GEN-LAST:event_refreshButtonKeyPressed
+
+    private void adminButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adminButtonKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_R) {
+            refreshButton.doClick();
+        }
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_Q) {
+            logoutButton.doClick();
+        }
+    }//GEN-LAST:event_adminButtonKeyPressed
+
+    private void logoutButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_logoutButtonKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_R) {
+            refreshButton.doClick();
+        }
+        if (evt.isControlDown() && evt.getKeyCode() == KeyEvent.VK_Q) {
+            logoutButton.doClick();
+        }
+    }//GEN-LAST:event_logoutButtonKeyPressed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Main("").setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton adminButton;
+    private javax.swing.JButton cashierButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton logoutButton;
+    private javax.swing.JButton medicinesButton;
+    private javax.swing.JTable medicinesTable;
+    private javax.swing.JButton refreshButton;
+    private javax.swing.JTable transactionsTable;
+    // End of variables declaration//GEN-END:variables
+}
